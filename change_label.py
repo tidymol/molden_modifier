@@ -8,7 +8,7 @@ import datetime
 _version = "1.0.0"
 
 def change_label(in_path, out_path):
-    find_energy = re.compile("(\d+\.\d{9}).*(mo_\d+\.out)")
+    find_energy = re.compile("(\d+\.\d{9}).*(.*.out)")
     count = 1
     with open(in_path, 'r') as in_f, open(out_path, 'w') as out_f:
         number_of_elements = int(in_f.readline())
