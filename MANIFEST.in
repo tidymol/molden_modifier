@@ -1,0 +1,34 @@
+# For further details, see
+# https://docs.python.org/3/distutils/sourcedist.html#specifying-the-files-to-distribute
+
+# INCLUDE IT ALL
+recursive-exclude examples *
+recursive-include docs *.rst *.py
+include docs/spelling_wordlist.txt
+include docs/requirements.txt
+include docs/Makefile
+recursive-exclude docs/reference/_autosummary *.rst
+
+# Docs
+include README*
+include LICENSE
+include *.rst
+
+# Development Files & Test Suite
+include make_devsetup.sh
+include *requirements.txt
+include tox.ini
+include .bumpversion.cfg
+include .editorconfig
+
+# Check Files & Validation & Test Suite
+graft tests
+
+# REMOVE NONSENSE
+prune ci
+
+# Configuration files for automated testing & git repo maintenance
+global-exclude .coveragerc .coverage .travis.yml .versionrc versionbump
+
+# Temporary files
+global-exclude *.py[cod] __pycache__ *.so *.dylib *~ *.bak *.gitignore *.doap

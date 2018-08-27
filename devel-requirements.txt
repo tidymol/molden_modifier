@@ -1,0 +1,16 @@
+# Requirements file for pip
+
+-r requirements.txt
+
+pytest
+pytest-cov
+tox
+isort
+flake8
+bumpversion
+#
+coverage
+codecov
+coveralls
+codacy-coverage
+codeclimate-test-reporter
