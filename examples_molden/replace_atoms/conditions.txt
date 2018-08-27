@@ -1,0 +1,78 @@
+- The objective is to replace two "Cl" by "Ag" and "Au", this names can be different.
+  The important part is to obtain three different names instead three equal "Cl" atoms of every molecule.
+  Because the next script to calculate distances between atoms works on this output molden.
+
+- I added one example of the script to calculate distances and the quantities q1 and q2
+  I have one script for every atom : Au, Ag, Cl.
+  I execute the script over the output molden, example:
+
+    # In this case, I call the "atom 1" to "Au"
+    $ ./zo_get_q1vsq2_atom_1 HCl_output.molden > q1q2_atom1.data
+
+- The order of the atoms in the output.molden can change, it will be related to the atom
+  specified in the script zo_get_q1vsq2...
+
+- I guess the script has a lot of extra lines with no sense, the important part is this one
+  (note that is about the atom "Au"):
+
+
+if atoms in range(0,n_atoms):
+            sym=molecule[imol,iatoms,0]
+            if sym == "Au":
+               indcl=iatoms
+            xx=molecule[imol,iatoms,1]
+            yy=molecule[imol,iatoms,2]
+            zz=molecule[imol,iatoms,3]
+            #print "%-2s %16.9f %16.9f %16.9f, %5d" % (sym,xx,yy,zz,indcl)
+        sym0=molecule[imol,indcl,0]
+        xx0=molecule[imol,indcl,1]
+        yy0=molecule[imol,indcl,2]
+        zz0=molecule[imol,indcl,3]
+        dis_short=100.0
+        r1=100.0
+        inx=0
+        ## the closet Hydrogen
+        for iatoms in range(0,n_atoms):
+            sym=molecule[imol,iatoms,0]
+            if (iatoms != indcl) and (sym == "H"):
+                xx=molecule[imol,iatoms,1]
+                yy=molecule[imol,iatoms,2]
+                zz=molecule[imol,iatoms,3]
+                dis=(sqrt((xx0-xx)**2+(yy0-yy)**2+(zz0-zz)**2))
+                if r1 > dis:
+                   r1=dis
+                   inx=iatoms
+                #if dis_short > dis:
+                #   dis_short=dis
+                #   inx=iatoms
+        #print  indcl,inx,dis_short
+        ## the closet O
+        xx1=molecule[imol,inx,1]
+        yy1=molecule[imol,inx,2]
+        zz1=molecule[imol,inx,3]
+        dis_short2=100.0
+        r2=100.0
+        inx2=0
+        for iatoms in range(0,n_atoms):
+            sym=molecule[imol,iatoms,0]
+            if (iatoms != inx) and (sym == "O") or (sym == "Cl") or (sym == "Ag"):
+                xx=molecule[imol,iatoms,1]
+                yy=molecule[imol,iatoms,2]
+                zz=molecule[imol,iatoms,3]
+                dis2=(sqrt((xx1-xx)**2+(yy1-yy)**2+(zz1-zz)**2))
+                if r2 > dis2:
+                   r2=dis2
+                   inx2=iatoms
+                #if dis_short2 > dis2:
+                #   dis_short2=dis2
+                #   inx2=iatoms
+        q2=r1+r2
+        q1=(r1-r2)/2.0
+        #q2=dis_short+dis_short2
+        #q1=(dis_short-dis_short2)/2.0
+
+        #print  imol,indcl+1,inx+1,inx2+1,dis_short,dis_short2,q1,q2
+        indx_cl=indcl+1
+        indx_h=inx+1
+        indx_o=inx2+1
+        print "%-5d %-5d %-5d %-5d %-16.9f %-16.9f %-16.9f %-16.9f" % (imol,indx_cl,indx_h,indx_o,dis_short,dis_short2,q1,q2)

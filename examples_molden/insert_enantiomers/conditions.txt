@@ -1,0 +1,11 @@
+- Here the desired output is "total.molden" which is the structures.molden
+  and enantiomers.molden together ordered by energy
+
+- The file enantiomers.molden are obtained from structures.molden. I don´t
+  have the code of the script but it is the result of multiply every coordinate
+  by -1, like a "mirror" image of the structure.
+
+- Usually I generate the enantiomers.molden with the script. This script gives
+  the new names adding the prefix "enant" for every structure and after I use
+  "cat" to join the files, finally I order the structures by energy or paste
+  every enantiomer below his original structure.
