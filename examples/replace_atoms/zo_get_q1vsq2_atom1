@@ -557,7 +557,7 @@ def get_atomic_masses(sym):
             atomic_mass=atomic_masses[ii]
             found=1
     if found == 0:
-        print "Warrning : Atomic mass not found for Z=",sym1
+        print( "Warrning : Atomic mass not found for Z=",sym1)
         atomic_mass=1.011
     return atomic_mass
 
@@ -596,9 +596,9 @@ def get_center_of_mass(molecule):
             molecule[imol,iatoms,1]=molecule[imol,iatoms,1]-xcom
             molecule[imol,iatoms,2]=molecule[imol,iatoms,2]-ycom
             molecule[imol,iatoms,3]=molecule[imol,iatoms,3]-zcom
-        #print xcom
-        #print ycom
-        #print zcom
+        #print( xcom )
+        #print( ycom )
+        #print( zcom )
         return molecule
 
 def write_xyz(molecule,output):
@@ -611,28 +611,31 @@ def write_xyz(molecule,output):
         n_atoms=molecule[imol,0,6]
         energy=molecule[imol,0,4]
         name=molecule[imol,0,5]
-        print >>open_new,"%-4d" % (n_atoms)
-        print >>open_new,"%-16.9f %s %s" % (energy,"  ",name)
+        print("%-4d" % (n_atoms), file=open_new)
+        print("%-16.9f %s %s" % (energy,"  ",name), file=open_new)
         for iatoms in range(0,n_atoms):
             sym=molecule[imol,iatoms,0]
             xx=molecule[imol,iatoms,1]
             yy=molecule[imol,iatoms,2]
             zz=molecule[imol,iatoms,3]
-            print >>open_new,"%-2s %16.9f %16.9f %16.9f" % (sym,xx,yy,zz)
+            print("%-2s %16.9f %16.9f %16.9f" % (sym,xx,yy,zz), file=open_new)
     open_new.close()
-    print "Output = ",output
+    print( "Output = ",output)
 
 def get_cloro(molecule):
     how_many_atoms={}
+    import pdb
+    pdb.set_trace()
     for key in sorted(molecule.iterkeys()):
         how_many_atoms[key[0]]=key[1]
+    pdb.set_trace()
     total_molecules=len(how_many_atoms)
     for imol in range(1,total_molecules+1):
         n_atoms=molecule[imol,0,6]
         energy=molecule[imol,0,4]
         name=molecule[imol,0,5]
-        #print "%-4d" % (n_atoms)
-        #print "%-16.9f %s %s" % (energy,"  ",name)
+        #print( "%-4d" % (n_atoms))
+        #print( "%-16.9f %s %s" % (energy,"  ",name))
         indcl=0
         for iatoms in range(0,n_atoms):
             sym=molecule[imol,iatoms,0]
@@ -641,7 +644,7 @@ def get_cloro(molecule):
             xx=molecule[imol,iatoms,1]
             yy=molecule[imol,iatoms,2]
             zz=molecule[imol,iatoms,3]
-            #print "%-2s %16.9f %16.9f %16.9f, %5d" % (sym,xx,yy,zz,indcl)
+            #print( "%-2s %16.9f %16.9f %16.9f, %5d" % (sym,xx,yy,zz,indcl))
         sym0=molecule[imol,indcl,0]
         xx0=molecule[imol,indcl,1]
         yy0=molecule[imol,indcl,2]
@@ -663,7 +666,7 @@ def get_cloro(molecule):
                 #if dis_short > dis:
                 #   dis_short=dis
                 #   inx=iatoms
-        #print  indcl,inx,dis_short
+        #print(  indcl,inx,dis_short)
         ## the closet O
         xx1=molecule[imol,inx,1]
         yy1=molecule[imol,inx,2]
@@ -689,23 +692,23 @@ def get_cloro(molecule):
         #q2=dis_short+dis_short2
         #q1=(dis_short-dis_short2)/2.0
 
-        #print  imol,indcl+1,inx+1,inx2+1,dis_short,dis_short2,q1,q2
+        #print(  imol,indcl+1,inx+1,inx2+1,dis_short,dis_short2,q1,q2)
         indx_cl=indcl+1
         indx_h=inx+1
         indx_o=inx2+1
-        print "%-5d %-5d %-5d %-5d %-16.9f %-16.9f %-16.9f %-16.9f" % (imol,indx_cl,indx_h,indx_o,dis_short,dis_short2,q1,q2)
+        print( "%-5d %-5d %-5d %-5d %-16.9f %-16.9f %-16.9f %-16.9f" % (imol,indx_cl,indx_h,indx_o,dis_short,dis_short2,q1,q2))
 
 
-                #print dis,indcl,iatoms,sym0,sym
+                #print( dis,indcl,iatoms,sym0,sym)
                 #if dis <= 1.36:
-                    #print imo  l, dis,indcl,iatoms,sym0,sym,name
+                    #print( imo  l, dis,indcl,iatoms,sym0,sym,name)
                     #sname="cp ../"+name+" ."
-                    #print sname
+                    #print( sname)
 
             #if iatoms != indcl:
 
     #open_new.close()
-    #print "Output = ",output
+    #print( "Output = ",output)
 
 
 
@@ -720,11 +723,11 @@ def get_area(molecule):
         n_atoms=molecule[imol,0,6]
         energy=molecule[imol,0,4]
         name=molecule[imol,0,5]
-        #print >>open_new,"%-4d" % (n_atoms)
-        #print >>open_new,"%-16.9f %s %s" % (energy,"  ",name)
+        #print( >>open_new,"%-4d" % (n_atoms))
+        #print( >>open_new,"%-16.9f %s %s" % (energy,"  ",name))
         suma=0.0
         for iatoms in range(0,n_atoms):
-            #print " what",(iatoms+1),n_atoms
+            #print( " what",(iatoms+1),n_atoms )
             idx_a=0
             idx_b=0
             idx_c=0
@@ -749,8 +752,8 @@ def get_area(molecule):
             c=np.cross(a,b)
             area=np.linalg.norm(c)/2.0
             suma=suma+area
-            print "Triangulo  [", idx_a, idx_b, "centro ]",area,suma
-        print "Area total=",suma
+            print( "Triangulo  [", idx_a, idx_b, "centro ]",area,suma)
+        print( "Area total=",suma )
 
 def is_number(s):
     try:
@@ -768,7 +771,7 @@ def get_chemical_symbols(symb):
                symb2=symb1
                found=1
        if found == 0:
-           print "Warrning : Symbol not found for Z=",symb
+           print( "Warrning : Symbol not found for Z=",symb)
            symb2="C"
        return symb2
 
@@ -782,7 +785,7 @@ def get_atomic_number(symb):
                symb2=ii
                found=1
        if found == 0:
-           print "Warrning : Z not found for symbol=",symb
+           print( "Warrning : Z not found for symbol=",symb)
            symb2=1
        return symb2
 
@@ -801,8 +804,8 @@ def molecule_sort(molecule):
         molecule_tmp[imol,0,6]=molecule[imol,0,6]
         molecule_tmp[imol,0,4]=molecule[imol,0,4]
         molecule_tmp[imol,0,5]=molecule[imol,0,5]
-        print "%-4d" % (n_atoms)
-        print "%-16.9f %s %s" % (energy,"  ",name)
+        print( "%-4d" % (n_atoms))
+        print( "%-16.9f %s %s" % (energy,"  ",name))
         A=[]
         B=[]
         C=[]
@@ -817,7 +820,7 @@ def molecule_sort(molecule):
             B.append(molecule[imol,iatoms,1])
             C.append(molecule[imol,iatoms,2])
             D.append(molecule[imol,iatoms,3])
-            print "%-4d %16.9f %16.9f %16.9f" % (atomic_number,xx,yy,zz)
+            print( "%-4d %16.9f %16.9f %16.9f" % (atomic_number,xx,yy,zz))
         A,B,C,D=bubblesort(A,B,C,D)
         for iatoms in range(0,n_atoms):
             symbol=get_chemical_symbols(int(A[iatoms]))
@@ -828,7 +831,7 @@ def molecule_sort(molecule):
             xx= molecule_tmp[imol,iatoms,1]
             yy= molecule_tmp[imol,iatoms,2]
             zz= molecule_tmp[imol,iatoms,3]
-            print "%-4s %16.9f %16.9f %16.9f" % (symbol,xx,yy,zz)
+            print( "%-4s %16.9f %16.9f %16.9f" % (symbol,xx,yy,zz))
     return molecule_tmp
 
 
@@ -856,10 +859,12 @@ def bubblesort(A,B,C,D):
 
 args=sys.argv[1:]
 if len(args) < 1:
-    print " ",sys.argv[0], "  < *.molden >"
+    print( " ",sys.argv[0], "  < *.molden >")
     exit()
 
 molecule=read_xyz(sys.argv[1])
+import pdb
+pdb.set_trace()
 get_cloro(molecule)
 
 

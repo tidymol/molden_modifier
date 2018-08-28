@@ -12,45 +12,71 @@ import ply.yacc as yacc
 
 LOG = logging.getLogger(__name__)
 
-tokens = [ 'NUMBER_OF_ATOMS', 'EOL', 'SEP', 'LABEL',
-           'SYMBOL', 'FLOAT' ]
+tokens = [ 'INT', 'FLOAT', 'EOL', 'SEP', 'LABEL',
+           'SYMBOL']
 
-t_LABEL = r'[a-zA-Z_][a-zA-Z0-9_\.]*'
-t_EOL = r'\n'
-t_SEP = r'\ +'
+t_LABEL = r'[a-zA-Z_][\w\._]+'
+t_EOL = r'(\n|\r\n|\r)'
+t_SEP = r'(\ +|\t+)'
 
 def t_SYMBOL(t):
     r'(X|H|He|Li|Be|B|C|N|O|F|Ne|Na|Mg|Al|Si|P|S|Cl|Ar|K|Ca|Sc|Ti|V|Cr|Mn|Fe|Co|Ni|Cu|Zn|Ga|Ge|As|Se|Br|Kr|Rb|Sr|Y|Zr|Nb|Mo|Tc|Ru|Rh|Pd|Ag|Cd|In|Sn|Sb|Te|I|Xe|Cs|Ba|La|Ce|Pr|Nd|Pm|Sm|Eu|Gd|Tb|Dy|Ho|Er|Tm|Yb|Lu|Hf|Ta|W|Re|Os|Ir|Pt|Au|Hg|Tl|Pb|Bi|Po|At|Rn|Fr|Ra|Ac|Th|Pa|U|Np|Pu|Am|Cm|Bk|Cf|Es|Fm|Md|No|Lr)(\ |\t)'
     t.value = t.value[:-1]
     return t
 
-def t_NUMBER_OF_ATOMS(t):
-    r'\d+(\ +)?\n'
+def t_INT(t):
+    r'(?m)^\d+\ +$'
     t.value = np.int(t.value)
     return t
 
 def t_FLOAT(t):
-    r'\-?\d\.\d{1,10}'
+    r'\-?\d+\.\d+'
     t.value = np.float(t.value)
     return t
 
 def t_error(t):
     raise TypeError("Unknown text '%s'" % (t.value,))
 
-lex.lex()
+LEXER = lex.lex()
 
 def p_molden_file(p):
     '''molden_file : molecul
                    | molden_file molecul
+                   | molden_file EOL
     '''
     if len(p) > 2:
-        p[0] = p[1] + [p[2]]
+        if p[2] == "\n":
+            p[0] = p[1]
+        else:
+            p[0] = p[1] + [p[2]]
     else:
         p[0] = [p[1]]
 
 def p_molecul(p):
-    '''molecul : NUMBER_OF_ATOMS FLOAT SEP LABEL EOL atoms EOL'''
-    p[0] = Molecule(p[1], p[2], p[4], p[6])
+    '''molecul : INT EOL FLOAT SEP LABEL EOL atoms EOL
+               | INT EOL LABEL EOL atoms EOL
+               | INT EOL atoms EOL'''
+    if len(p) == 9:
+        if not p[1] == len(p[7]):
+            LOG.warning("Mismatch of the number_of_atoms in Molecule %s", p[5])
+            LOG.warning("Parsed value: %s", p[1])
+            LOG.warning("Real value of atoms: %s", len(p[7]))
+            LOG.warning("The value will be automatically corrected")
+        p[0] = Molecule(p[5], p[3], p[7])
+    elif len(p) == 7:
+        if not p[1] == len(p[5]):
+            LOG.warning("Mismatch of the number_of_atoms in Molecule %s", p[3])
+            LOG.warning("Parsed value: %s", p[1])
+            LOG.warning("Real value of atoms: %s", len(p[5]))
+            LOG.warning("The value will be automatically corrected")
+        p[0] = Molecule(p[3], 0, p[5])
+    else:
+        if not p[1] == len(p[3]):
+            LOG.warning("Mismatch of the number_of_atoms in Molecule")
+            LOG.warning("Parsed value: %s", p[1])
+            LOG.warning("Real value of atoms: %s", len(p[3]))
+            LOG.warning("The value will be automatically corrected")
+        p[0] = Molecule("", 0, p[3])
 
 def p_atom(p):
     '''atom : SYMBOL SEP FLOAT SEP FLOAT SEP FLOAT'''
@@ -65,26 +91,24 @@ def p_atoms(p):
         p[0] = [p[1]]
 
 def p_error(p):
-    print("Syntax error at '%s'" % p.value)
+    try:
+        LOG.error("{1}: Syntax error on '{0}'".format(p.value, LEXER.lineno))
+    except AttributeError:
+        LOG.error("{0}: Syntax error on line".format(LEXER.lineno))
 
 yacc.yacc()
 
 
 class Molecule(object):
 
-    def __init__(self, number_of_atoms, energy, label, atoms):
-        self._number_of_atoms = number_of_atoms
-        self._energy = energy
+    def __init__(self, label, energy, atoms):
         self._label = label
+        self._energy = energy
         self._atoms = atoms
 
     @property
     def number_of_atoms(self):
-        return self._number_of_atoms
-
-    @number_of_atoms.setter
-    def number_of_atoms(self, number_of_atoms):
-        self._number_of_atoms = number_of_atoms
+        return len(self._atoms)
 
     @property
     def label(self):
@@ -100,7 +124,7 @@ class Molecule(object):
 
     @energy.setter
     def energy(self, energy):
-        self._energy = energy
+        self._energy = np.float(energy)
 
     @property
     def atoms(self):
@@ -108,6 +132,9 @@ class Molecule(object):
 
     @atoms.setter
     def atoms(self, atoms):
+        if len(atoms) < 2:
+            raise ValueError("A molecule needs to consist at least of two atoms.")
+        self.number_of_atoms = len(atoms)
         self._atoms = atoms
 
     def mirror(self, compare=None):

@@ -108,6 +108,7 @@ def main(cliargs=None):
         with open(args['<molden_file>'], 'r') as infile:
             data = infile.read()
             molecules = parse(data)
+            LOG.info("Found %s molecules in %s", len(molecules), args['<molden_file>'])
             results = None
             if args["mirror"]:
                 results = mirror(molecules, args["--compare"])
