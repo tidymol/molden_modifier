@@ -7,6 +7,7 @@ import logging
 import numpy as np
 import ply.lex as lex
 import ply.yacc as yacc
+from molmod.periodic import periodic
 
 # Local imports
 
@@ -106,9 +107,22 @@ class Molecule(object):
         self._energy = energy
         self._atoms = atoms
 
+
     @property
     def number_of_atoms(self):
         return len(self._atoms)
+
+    @property
+    def numbers(self):
+        return [atom.number for atom in self._atoms]
+
+    @property
+    def symbols(self):
+        return [atom.symbol for atom in self._atoms]
+
+    @property
+    def coordinates(self):
+        return np.array([ atom.coordinates for atom in self._atoms])
 
     @property
     def label(self):
@@ -136,6 +150,12 @@ class Molecule(object):
             raise ValueError("A molecule needs to consist at least of two atoms.")
         self.number_of_atoms = len(atoms)
         self._atoms = atoms
+
+    def get_atoms_by_symbol(self, symbol):
+        return [ atom for atom in self._atoms if atom.symbol == symbol ]
+
+    def get_indexes_by_symbol(self, symbol):
+        return [ self._atoms.index(atom) for atom in self._atoms if atom.symbol == symbol ]
 
     def mirror(self, compare=None):
         self.label = "ent_{}".format(self.label)
@@ -168,6 +188,10 @@ class Atom(object):
         self._symbol = symbol
 
     @property
+    def number(self):
+        return periodic.atoms_by_symbol[self._symbol.lower()].number
+
+    @property
     def x(self):
         return self._x
 
@@ -190,6 +214,10 @@ class Atom(object):
     @z.setter
     def z(self, z):
         self._z = z
+
+    @property
+    def coordinates(self):
+        return np.array([self._x, self._y, self._z], np.float)
 
     def __str__(self):
         seperator = " "*5

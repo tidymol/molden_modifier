@@ -1,8 +1,9 @@
 """Helps to modify molden files
 
 Usage:
-    molden_modifier [options] mirror <molden_file> [--compare]
+    molden_modifier [options] mirror [--compare] <molden_file>
     molden_modifier [options] sort <molden_file>
+    molden_modifier [options] shortest_distance -s SYMBOL <molden_file>
     molden_modifier -h | --help | --version
 
 Required Arguments:
@@ -16,8 +17,16 @@ Options:
                       Optional file where results are written to
 
 Subcommands:
-    mirror            Mirrors the moleculs of the molden file.
-    sort              Sorts the the moleculs of the molden file by energy.
+    sort                  Sorts the the moleculs of the molden file by energy.
+
+    mirror                Mirrors the moleculs of the molden file.
+    Options:
+        --compare         The mirrored and the original molecule will be added
+                          both to the output file. This helps to compare it.
+
+    shortest_distance     Finds the shortest distance of every Hydrogen Bonding
+    Options:
+        -s <SYMBOL>       The Symbol ...
 """
 
 # Standard Library
@@ -31,7 +40,7 @@ from docopt import DocoptExit, docopt, printable_usage
 
 # Local imports
 from . import __version__
-from .commands import mirror, sort
+from .commands import mirror, sort, shortest_distance
 from .common import DEFAULT_LOGGING_DICT, LOGLEVELS, errorcode
 from .molden import parse
 
@@ -70,7 +79,7 @@ def checkargs(args):
     if not os.path.exists(molden_file):
         raise FileNotFoundError(molden_file)
 
-def output(results, file_path):
+def output(results, file_path, cvs):
     """Write the result to a file if the --output argument is set otherwise
        the result will be printed on stdout.
 
@@ -84,9 +93,12 @@ def output(results, file_path):
     if path != "":
         os.makedirs(path, exist_ok=True)
     if file_path:
-        with open(file_path, "w") as outfile:
-            for molecule in results:
-                outfile.write(str(molecule))
+        if cvs:
+            results.to_csv(file_path)
+        else:
+            with open(file_path, "w") as outfile:
+                for molecule in results:
+                    outfile.write(str(molecule))
     else:
         for molecule in results:
             print(molecule)
@@ -110,13 +122,17 @@ def main(cliargs=None):
             molecules = parse(data)
             LOG.info("Found %s molecules in %s", len(molecules), args['<molden_file>'])
             results = None
+            cvs = False
             if args["mirror"]:
                 results = mirror(molecules, args["--compare"])
             elif args["sort"]:
                 results = sort(molecules)
+            elif args["shortest_distance"]:
+                results = shortest_distance(molecules, args["-s"])
+                cvs = True
             else:
                 raise RuntimeError("Unknown command")
-            output(results, args["--output"])
+            output(results, args["--output"], cvs)
 
         LOG.info("Done.")
         return 0

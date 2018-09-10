@@ -1,3 +1,6 @@
 ply
 numpy
 docopt
+molmod
+Cython
+pandas
