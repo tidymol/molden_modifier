@@ -16,3 +16,4 @@ in a virtual environment::
     $ source .env/bin/activate
     $ pip install -r requirements.txt
     $ pip install molden_modifier
+#use setup.py
