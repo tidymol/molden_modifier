@@ -26,7 +26,7 @@ def t_SYMBOL(t):
     return t
 
 def t_INT(t):
-    r'(?m)^\d+\ +$'
+    r'(?m)^\d+\ *$'
     t.value = np.int(t.value)
     return t
 

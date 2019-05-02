@@ -3,12 +3,12 @@
 # Standard Library
 import copy
 import logging
-import pdb
 import pandas as pd
 
 from molmod.molecules import Molecule
 
 LOG = logging.getLogger(__name__)
+
 
 def mirror(molecules, compare):
     copy_of_molecules = list()
@@ -24,12 +24,28 @@ def mirror(molecules, compare):
 def sort(molecules):
     return sorted(molecules, key=lambda molecule: molecule.energy)
 
+
+def info(molecules):
+    pass
+
+
+def filter(molecules_filter, molecules):
+    filtered_list = list()
+    for molecule in molecules:
+        for molecule_filter in molecules_filter:
+            if molecule.label == molecule_filter.label:
+                filtered_list.append(molecule)
+                continue
+    return filtered_list
+
+
 def convert_molecule_to_molmod(molecule):
     molModMolecule = Molecule(molecule.numbers,
             molecule.coordinates, molecule.label,
             symbols=molecule.symbols)
     molModMolecule.set_default_graph()
     return molModMolecule
+
 
 def shortest_distance(molecules, symbol, max_distance=100):
     distances = {

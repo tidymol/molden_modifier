@@ -1,6 +1,8 @@
 """Helps to modify molden files
 
 Usage:
+    molden_modifier [options] info <molden_file>
+    molden_modifier [options] filter -f FILTER <molden_file>
     molden_modifier [options] mirror [--compare] <molden_file>
     molden_modifier [options] sort <molden_file>
     molden_modifier [options] shortest_distance -s SYMBOL <molden_file>
@@ -17,7 +19,11 @@ Options:
                       Optional file where results are written to
 
 Subcommands:
+    info                  Prints some basic information about the molden file.
+    filter                Applies a specific filter on a molden file.
     sort                  Sorts the the moleculs of the molden file by energy.
+    Options:
+        -f <FILTER>       The molden file which is used for filtering.
 
     mirror                Mirrors the moleculs of the molden file.
     Options:
@@ -40,7 +46,7 @@ from docopt import DocoptExit, docopt, printable_usage
 
 # Local imports
 from . import __version__
-from .commands import mirror, sort, shortest_distance
+from .commands import info, filter, mirror, sort, shortest_distance
 from .common import DEFAULT_LOGGING_DICT, LOGLEVELS, errorcode
 from .molden import parse
 
@@ -79,6 +85,7 @@ def checkargs(args):
     if not os.path.exists(molden_file):
         raise FileNotFoundError(molden_file)
 
+
 def output(results, file_path, cvs):
     """Write the result to a file if the --output argument is set otherwise
        the result will be printed on stdout.
@@ -89,6 +96,8 @@ def output(results, file_path, cvs):
     :type file_path: str
     :return: None
     """
+    if results is None:
+        return None
     path, filename = os.path.split(file_path)
     if path != "":
         os.makedirs(path, exist_ok=True)
@@ -125,6 +134,13 @@ def main(cliargs=None):
             cvs = False
             if args["mirror"]:
                 results = mirror(molecules, args["--compare"])
+            elif args["filter"]:
+                with open(args["-f"], 'r') as filter_file:
+                    filter_data = filter_file.read()
+                    molecules_filter = parse(filter_data)
+                    results = filter(molecules_filter, molecules)
+            elif args["info"]:
+                info(molecules)
             elif args["sort"]:
                 results = sort(molecules)
             elif args["shortest_distance"]:
