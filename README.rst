@@ -14,5 +14,7 @@ in a virtual environment::
 
     $ python3 -m venv .env
     $ source .env/bin/activate
-    $ pip install -r requirements.txt
-    $ pip install molden_modifier
+    $ pip install --upgrade pip
+    $ pip install --upgrade
+    $ pip install -r devel-requirements.txt
+    $ python setup.py develop
