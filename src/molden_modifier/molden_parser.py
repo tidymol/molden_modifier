@@ -35,5 +35,3 @@ def p_error(p):
 yacc.yacc()
 
 test = yacc.parse(open("total.molden").read())
-import pdb
-pdb.set_trace()

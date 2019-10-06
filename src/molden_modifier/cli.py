@@ -38,6 +38,7 @@ Subcommands:
 # Standard Library
 import logging
 import os
+import re
 import sys
 from logging.config import dictConfig
 
@@ -126,29 +127,37 @@ def main(cliargs=None):
         LOG.debug('Python version: %s', sys.version.split()[0])
         LOG.debug("CLI result: %s", args)
         checkargs(args)
+        data = ""
         with open(args['<molden_file>'], 'r') as infile:
-            data = infile.read()
-            molecules = parse(data)
-            LOG.info("Found %s molecules in %s", len(molecules), args['<molden_file>'])
-            results = None
-            cvs = False
-            if args["mirror"]:
-                results = mirror(molecules, args["--compare"])
-            elif args["filter"]:
-                with open(args["-f"], 'r') as filter_file:
-                    filter_data = filter_file.read()
-                    molecules_filter = parse(filter_data)
-                    results = filter(molecules_filter, molecules)
-            elif args["info"]:
-                info(molecules)
-            elif args["sort"]:
-                results = sort(molecules)
-            elif args["shortest_distance"]:
-                results = shortest_distance(molecules, args["-s"])
-                cvs = True
-            else:
-                raise RuntimeError("Unknown command")
-            output(results, args["--output"], cvs)
+            for line in infile.readlines():
+                data += re.sub(r" *$", "", line)
+        if data is None:
+            Log.error("Empty file")
+            sys.exit(1)
+        molecules = parse(data)
+        if molecules is None:
+            LOG.info("No molecules found!")
+            sys.exit(1)
+        LOG.info("Found %s molecules in %s", len(molecules), args['<molden_file>'])
+        results = None
+        cvs = False
+        if args["mirror"]:
+            results = mirror(molecules, args["--compare"])
+        elif args["filter"]:
+            with open(args["-f"], 'r') as filter_file:
+                filter_data = filter_file.read()
+                molecules_filter = parse(filter_data)
+                results = filter(molecules_filter, molecules)
+        elif args["info"]:
+            info(molecules)
+        elif args["sort"]:
+            results = sort(molecules)
+        elif args["shortest_distance"]:
+            results = shortest_distance(molecules, args["-s"])
+            cvs = True
+        else:
+            raise RuntimeError("Unknown command")
+        output(results, args["--output"], cvs)
 
         LOG.info("Done.")
         return 0
