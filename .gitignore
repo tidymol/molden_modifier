@@ -57,8 +57,18 @@ docs/_build
 .build
 .ve
 .env
+.venv
 .cache
 .pytest
 .bootstrap
 .appveyor.token
 *.bak
+
+# Parsing
+parsetab.py
+*.out
+
+# Molden files
+*.molden
+
+tmp
