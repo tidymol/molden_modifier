@@ -2,15 +2,35 @@
 tidymol 0.1.0
 =====================
 
+.. start-badges
+
+|made-with-python|
+
+.. |made-with-python| image:: https://img.shields.io/badge/Made%20with-Python-1f425f.svg
+   :target: https://www.python.org/
+
+.. end-badges
+
 Some tools for sorting, comparison and get data from molden files
+
+The toolset should help you during your chemistry research with sorting,
+filtering and searching the data in molden files. Furthermore it should also
+help to visualize the data in your paper.
 
 * Free software: MIT license
 
-Development
-============
+Usage Example
+=============
 
-Use your package manager or use the following instructions to install it
-in a virtual environment::
+::
+
+   TODO
+
+
+Quick Development Setup
+=======================
+
+::
 
     $ python3 -m venv .env
     $ source .env/bin/activate
