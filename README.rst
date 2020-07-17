@@ -18,3 +18,15 @@ in a virtual environment::
     $ pip install --upgrade
     $ pip install -r devel-requirements.txt
     $ python setup.py develop
+
+Citation
+========
+
+```
+@Misc{Loehel2020,
+  author = {Juergen Loehel and Alba Vargas-Caamal},
+  title  = {Molden-modifier 1.0},
+  year   = {2020},
+  url    = {https://github.com/jloehel/molden_modifier},
+}
+```
