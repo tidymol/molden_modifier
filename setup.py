@@ -38,7 +38,7 @@ def requires(filename):
 
 # ------------------------------------------------------
 setup(
-    name='molden_modifier',
+    name='molden-modifier',
     version='0.1.0',
     license='MIT',
     description='Helps to modify molden files',
