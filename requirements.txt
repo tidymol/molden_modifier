@@ -1,5 +1,7 @@
 ply
 numpy
-docopt
+Cython
 molmod
 pandas
+loguru
+click
