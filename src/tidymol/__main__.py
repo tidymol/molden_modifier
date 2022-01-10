@@ -11,6 +11,6 @@ Why does this file exist, and why __main__? For more info, read:
 
 if __name__ == "__main__":
     import sys
-    from molden_modifier.cli import main
+    from tidymol.cli import main
 
     sys.exit(main())  # pragma: no cover
