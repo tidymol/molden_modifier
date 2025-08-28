@@ -2,7 +2,7 @@
 tidymol 0.1.0
 =====================
 
-Some tools to modify molden files.
+Some tools for sorting, comparison and get data from molden files
 
 * Free software: MIT license
 
