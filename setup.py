@@ -38,17 +38,17 @@ def requires(filename):
 
 # ------------------------------------------------------
 setup(
-    name='molden_modifier',
+    name='tidymol',
     version='0.1.0',
     license='MIT',
-    description='Helps to modify molden files',
+    description='Little Chem Helper',
     long_description='%s\n%s' % (
         re.compile('^.. start-badges.*^.. end-badges', re.M | re.S).sub('', read('README.rst')),
         re.sub(':[a-z]+:`~?(.*?)`', r'``\1``', read('CHANGELOG.rst'))
     ),
     author='Jürgen Löhel',
     author_email='juergen@loehel.de',
-    url='https://bitbucket.com/jloehel/molden_modifier',
+    url='https://github.com/jloehel/tidymol',
     packages=find_packages('src'),
     package_dir={'': 'src'},
     py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
@@ -85,7 +85,7 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'molden_modifier = molden_modifier.cli:main',
+            'tidymol = tidymol.cli:main',
         ]
     },
 )

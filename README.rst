@@ -1,12 +1,12 @@
 =====================
-molden_modifier 0.1.0
+tidymol 0.1.0
 =====================
 
-Some tools to modify molden files.
+Some tools for sorting, comparison and get data from molden files
 
 * Free software: MIT license
 
-Installation
+Development
 ============
 
 Use your package manager or use the following instructions to install it
@@ -14,19 +14,18 @@ in a virtual environment::
 
     $ python3 -m venv .env
     $ source .env/bin/activate
-    $ pip install --upgrade pip
-    $ pip install --upgrade
+    $ pip install --upgrade pip setuptools wheel
     $ pip install -r devel-requirements.txt
-    $ python setup.py develop
+    $ pip install -e .
 
 Citation
 ========
 
 ::
 
-    @Misc{Loehel2020,
+    @Misc{Loehel2022,
       author = {Juergen Loehel and Alba Vargas-Caamal},
-      title  = {Molden-modifier 1.0},
-      year   = {2020},
-      url    = {https://github.com/jloehel/molden_modifier},
+      title  = {tidymol 1.0},
+      year   = {2022},
+      url    = {https://github.com/jloehel/tidymol},
     }
